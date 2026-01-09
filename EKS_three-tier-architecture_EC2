@@ -1,0 +1,322 @@
+#https://github.com/iam-veeramalla/three-tier-architecture-demo/tree/master/EKS
+ranjithkatanguri@RK AV % kubectl version --client
+Client Version: v1.34.1
+Kustomize Version: v5.7.1
+
+ranjithkatanguri@RK AV %  which aws
+/usr/local/bin/aws
+
+ranjithkatanguri@RK AV % aws --version
+aws-cli/2.31.5 Python/3.13.9 Darwin/23.6.0 source/x86_64
+
+ranjithkatanguri@RK AV % aws sts get-caller-identity
+{
+    "UserId": "456752698279",
+    "Account": "456752698279",
+    "Arn": "arn:aws:iam::456752698279:root"
+}
+ranjithkatanguri@RK AV % eksctl create cluster --name demo-cluster-three-tier-1 --region us-east-1
+2026-01-08 17:00:06 [ℹ]  eksctl version 0.215.0
+2026-01-08 17:00:06 [ℹ]  using region us-east-1
+2026-01-08 17:00:06 [ℹ]  setting availability zones to [us-east-1c us-east-1f]
+2026-01-08 17:00:06 [ℹ]  subnets for us-east-1c - public:192.168.0.0/19 private:192.168.64.0/19
+2026-01-08 17:00:06 [ℹ]  subnets for us-east-1f - public:192.168.32.0/19 private:192.168.96.0/19
+2026-01-08 17:00:06 [ℹ]  nodegroup "ng-b7be3cb2" will use "" [AmazonLinux2023/1.32]
+2026-01-08 17:00:06 [!]  Auto Mode will be enabled by default in an upcoming release of eksctl. This means managed node groups and managed networking add-ons will no longer be created by default. To maintain current behavior, explicitly set 'autoModeConfig.enabled: false' in your cluster configuration. Learn more: https://eksctl.io/usage/auto-mode/
+2026-01-08 17:00:06 [ℹ]  using Kubernetes version 1.32
+2026-01-08 17:00:06 [ℹ]  creating EKS cluster "demo-cluster-three-tier-1" in "us-east-1" region with managed nodes
+2026-01-08 17:00:06 [ℹ]  will create 2 separate CloudFormation stacks for cluster itself and the initial managed nodegroup
+2026-01-08 17:00:06 [ℹ]  if you encounter any issues, check CloudFormation console or try 'eksctl utils describe-stacks --region=us-east-1 --cluster=demo-cluster-three-tier-1'
+2026-01-08 17:00:06 [ℹ]  Kubernetes API endpoint access will use default of {publicAccess=true, privateAccess=false} for cluster "demo-cluster-three-tier-1" in "us-east-1"
+2026-01-08 17:00:06 [ℹ]  CloudWatch logging will not be enabled for cluster "demo-cluster-three-tier-1" in "us-east-1"
+2026-01-08 17:00:06 [ℹ]  you can enable it with 'eksctl utils update-cluster-logging --enable-types={SPECIFY-YOUR-LOG-TYPES-HERE (e.g. all)} --region=us-east-1 --cluster=demo-cluster-three-tier-1'
+2026-01-08 17:00:06 [ℹ]  default addons metrics-server, vpc-cni, kube-proxy, coredns were not specified, will install them as EKS addons
+2026-01-08 17:00:06 [ℹ]  
+2 sequential tasks: { create cluster control plane "demo-cluster-three-tier-1", 
+    2 sequential sub-tasks: { 
+        2 sequential sub-tasks: { 
+            1 task: { create addons },
+            wait for control plane to become ready,
+        },
+        create managed nodegroup "ng-b7be3cb2",
+    } 
+}
+2026-01-08 17:00:06 [ℹ]  building cluster stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:00:07 [ℹ]  deploying stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:00:37 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:01:07 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:02:07 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+
+
+
+2026-01-08 17:03:08 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:04:08 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:05:08 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:06:08 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:07:08 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:08:09 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:09:09 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 17:09:11 [ℹ]  creating addon: metrics-server
+2026-01-08 17:09:11 [ℹ]  successfully created addon: metrics-server
+2026-01-08 17:09:12 [!]  recommended policies were found for "vpc-cni" addon, but since OIDC is disabled on the cluster, eksctl cannot configure the requested permissions; the recommended way to provide IAM permissions for "vpc-cni" addon is via pod identity associations; after addon creation is completed, add all recommended policies to the config file, under `addon.PodIdentityAssociations`, and run `eksctl update addon`
+2026-01-08 17:09:12 [ℹ]  creating addon: vpc-cni
+2026-01-08 17:09:12 [ℹ]  successfully created addon: vpc-cni
+2026-01-08 17:09:12 [ℹ]  creating addon: kube-proxy
+2026-01-08 17:09:13 [ℹ]  successfully created addon: kube-proxy
+2026-01-08 17:09:13 [ℹ]  creating addon: coredns
+2026-01-08 17:09:14 [ℹ]  successfully created addon: coredns
+2026-01-08 17:11:15 [ℹ]  building managed nodegroup stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 17:11:15 [ℹ]  deploying stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 17:11:15 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 17:11:45 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 17:12:17 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 17:13:49 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 17:13:49 [ℹ]  waiting for the control plane to become ready
+2026-01-08 17:13:50 [✔]  saved kubeconfig as "/Users/ranjithkatanguri/.kube/config"
+2026-01-08 17:13:50 [ℹ]  no tasks
+2026-01-08 17:13:50 [✔]  all EKS cluster resources for "demo-cluster-three-tier-1" have been created
+2026-01-08 17:13:51 [ℹ]  nodegroup "ng-b7be3cb2" has 2 node(s)
+2026-01-08 17:13:51 [ℹ]  node "ip-192-168-35-210.ec2.internal" is ready
+2026-01-08 17:13:51 [ℹ]  node "ip-192-168-8-45.ec2.internal" is ready
+2026-01-08 17:13:51 [ℹ]  waiting for at least 2 node(s) to become ready in "ng-b7be3cb2"
+2026-01-08 17:13:51 [ℹ]  nodegroup "ng-b7be3cb2" has 2 node(s)
+2026-01-08 17:13:51 [ℹ]  node "ip-192-168-35-210.ec2.internal" is ready
+2026-01-08 17:13:51 [ℹ]  node "ip-192-168-8-45.ec2.internal" is ready
+2026-01-08 17:13:51 [✔]  created 1 managed nodegroup(s) in cluster "demo-cluster-three-tier-1"
+2026-01-08 17:13:51 [ℹ]  kubectl command should work with "/Users/ranjithkatanguri/.kube/config", try 'kubectl get nodes'
+2026-01-08 17:13:51 [✔]  EKS cluster "demo-cluster-three-tier-1" in "us-east-1" region is ready
+
+ranjithkatanguri@RK AV % git clone https://github.com/ranjithrrk16/three-tier-architecture-demo.git
+Cloning into 'three-tier-architecture-demo'...
+remote: Enumerating objects: 2699, done.
+remote: Total 2699 (delta 0), reused 0 (delta 0), pack-reused 2699 (from 1)
+Receiving objects: 100% (2699/2699), 81.45 MiB | 33.97 MiB/s, done.
+Resolving deltas: 100% (1434/1434), done.
+ranjithkatanguri@RK AV % ls
+iam_policy.json			three-tier-architecture-demo
+ranjithkatanguri@RK AV % cd three-tier-architecture-demo 
+ranjithkatanguri@RK three-tier-architecture-demo % ls
+AKS				Swarm				mongo
+DCOS				cart				mysql
+EKS				catalogue			payment
+GKE				dispatch			pullbaseimages.sh
+K8s				docker-compose-load.yaml	ratings
+LICENSE				docker-compose.yaml		shipping
+OpenShift			fluentd				user
+README.md			load-gen			web
+ranjithkatanguri@RK three-tier-architecture-demo % cd EKS
+ranjithkatanguri@RK EKS % cd helm 
+ranjithkatanguri@RK helm % helm install robot-shop --namespace robot-shop .                          
+NAME: robot-shop
+LAST DEPLOYED: Thu Jan  8 17:44:56 2026
+NAMESPACE: robot-shop
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+ranjithkatanguri@RK helm % ls -l
+total 40
+-rw-r--r--   1 ranjithkatanguri  staff   137 Jan  8 17:44 Chart.yaml
+-rw-r--r--   1 ranjithkatanguri  staff  6652 Jan  8 17:44 README.md
+-rw-r--r--   1 ranjithkatanguri  staff   465 Jan  8 17:44 ingress.yaml
+drwxr-xr-x  30 ranjithkatanguri  staff   960 Jan  8 17:44 templates
+-rw-r--r--   1 ranjithkatanguri  staff  1103 Jan  8 17:44 values.yaml
+ranjithkatanguri@RK helm % 
+ranjithkatanguri@RK helm % kubectl get ns                                                            
+NAME              STATUS   AGE
+default           Active   41m
+kube-node-lease   Active   41m
+kube-public       Active   41m
+kube-system       Active   41m
+robot-shop        Active   9m7s
+ranjithkatanguri@RK helm % kubectl get pods -n robot-shop
+NAME                        READY   STATUS    RESTARTS   AGE
+cart-655b74fb49-ptjgh       1/1     Running   0          4m19s
+catalogue-b4855db44-wsll6   1/1     Running   0          4m19s
+dispatch-845799dc84-rpdvj   1/1     Running   0          4m19s
+mongodb-69d9cf5747-qf6df    1/1     Running   0          4m19s
+mysql-8c599b989-sd2hc       1/1     Running   0          4m19s
+payment-6589fd67f6-8cl9k    1/1     Running   0          4m19s
+rabbitmq-876447689-699hs    1/1     Running   0          4m19s
+ratings-6fb5c59f44-gmkgz    1/1     Running   0          4m19s
+redis-0                     1/1     Running   0          4m19s
+shipping-67cdd8c8c6-rkph9   1/1     Running   0          4m19s
+user-b4977f556-97w26        1/1     Running   0          4m19s
+web-7649bf4886-2f7nv        1/1     Running   0          4m19s
+ranjithkatanguri@RK helm % kubectl get svc
+NAME         TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+kubernetes   ClusterIP   10.100.0.1   <none>        443/TCP   42m
+ranjithkatanguri@RK helm % kubectl get svc -n robot-shop
+NAME        TYPE           CLUSTER-IP       EXTERNAL-IP                                                                PORT(S)                       AGE
+cart        ClusterIP      10.100.186.40    <none>                                                                     8080/TCP                      4m48s
+catalogue   ClusterIP      10.100.60.227    <none>                                                                     8080/TCP                      4m48s
+dispatch    ClusterIP      None             <none>                                                                     55555/TCP                     4m48s
+mongodb     ClusterIP      10.100.222.214   <none>                                                                     27017/TCP                     4m48s
+mysql       ClusterIP      10.100.215.179   <none>                                                                     3306/TCP                      4m48s
+payment     ClusterIP      10.100.82.126    <none>                                                                     8080/TCP                      4m48s
+rabbitmq    ClusterIP      10.100.113.83    <none>                                                                     5672/TCP,15672/TCP,4369/TCP   4m48s
+ratings     ClusterIP      10.100.213.111   <none>                                                                     80/TCP                        4m48s
+redis       ClusterIP      10.100.231.218   <none>                                                                     6379/TCP                      4m48s
+shipping    ClusterIP      10.100.62.59     <none>                                                                     8080/TCP                      4m48s
+user        ClusterIP      10.100.185.162   <none>                                                                     8080/TCP                      4m48s
+web         LoadBalancer   10.100.28.226    k8s-robotsho-web-68cab23a5d-8190d102a05077dd.elb.us-east-1.amazonaws.com   8080:32618/TCP                4m48s
+ranjithkatanguri@RK helm % ls
+Chart.yaml	README.md	ingress.yaml	templates	values.yaml
+ranjithkatanguri@RK helm % cat ingress.yaml 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: robot-shop
+  name: robot-shop
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web
+                port:
+                  number: 8080%                                                                                              ranjithkatanguri@RK helm % cat Chart.yaml 
+apiVersion: v1
+name: robot-shop
+version: 1.1.0
+home: https://github.com/instana/robot-shop
+description: Sample micoservices application
+
+ranjithkatanguri@RK helm % cat values.yaml 
+# Registry and repository for Docker images
+# Default is docker/robotshop/image:latest
+image:
+  repo: robotshop
+  version: latest
+  pullPolicy: IfNotPresent
+
+# EUM configuration
+# Provide your key and set the endpoint
+eum:
+  key: null
+  url: https://eum-eu-west-1.instana.io
+  #url: https://eum-us-west-2.instana.io
+
+# Pod Security Policy
+psp:
+  enabled: false
+
+# For the mini ones minikube, minishift set to true
+nodeport: false
+
+# "special" Openshift. Set to true when deploying to any openshift flavour
+openshift: false
+
+ocCreateRoute: false
+
+######################################
+# Affinities for individual workloads
+# set in the following way:
+# <workload>:
+#   affinity: {}
+#   nodeSelector: {}
+#   tolerations: []
+######################################
+
+cart: {}
+
+catalogue: {}
+
+dispatch: {}
+
+mongodb: {}
+
+mysql: {}
+
+payment:
+  # Alternative payment gateway URL
+  # Default is https://www.paypal.com
+  gateway: null
+  #gateway: https://www.worldpay.com
+
+rabbitmq: {}
+
+ratings: {}
+
+redis:
+  # Storage class to use with redis statefulset.
+  storageClassName: gp2
+
+shipping: {}
+
+user: {}
+
+web: {}
+ranjithkatanguri@RK helm % ls
+Chart.yaml	README.md	ingress.yaml	templates	values.yaml
+ranjithkatanguri@RK helm % kubectl apply -f ingress.yaml 
+Warning: annotation "kubernetes.io/ingress.class" is deprecated, please use 'spec.ingressClassName' instead
+ingress.networking.k8s.io/robot-shop created
+ranjithkatanguri@RK helm % kubectl get pods -n robot-shop                  
+NAME                        READY   STATUS    RESTARTS   AGE
+cart-655b74fb49-ptjgh       1/1     Running   0          8m25s
+catalogue-b4855db44-wsll6   1/1     Running   0          8m25s
+dispatch-845799dc84-rpdvj   1/1     Running   0          8m25s
+mongodb-69d9cf5747-qf6df    1/1     Running   0          8m25s
+mysql-8c599b989-sd2hc       1/1     Running   0          8m25s
+payment-6589fd67f6-8cl9k    1/1     Running   0          8m25s
+rabbitmq-876447689-699hs    1/1     Running   0          8m25s
+ratings-6fb5c59f44-gmkgz    1/1     Running   0          8m25s
+redis-0                     1/1     Running   0          8m25s
+shipping-67cdd8c8c6-rkph9   1/1     Running   0          8m25s
+user-b4977f556-97w26        1/1     Running   0          8m25s
+web-7649bf4886-2f7nv        1/1     Running   0          8m25s
+ranjithkatanguri@RK helm % eksctl delete cluster --name demo-cluster-three-tier-1 --region us-east-1
+2026-01-08 18:01:37 [ℹ]  deleting EKS cluster "demo-cluster-three-tier-1"
+2026-01-08 18:01:38 [ℹ]  will drain 0 unmanaged nodegroup(s) in cluster "demo-cluster-three-tier-1"
+2026-01-08 18:01:38 [ℹ]  starting parallel draining, max in-flight of 1
+2026-01-08 18:01:38 [ℹ]  deleted 0 Fargate profile(s)
+2026-01-08 18:01:39 [✔]  kubeconfig has been updated
+2026-01-08 18:01:39 [ℹ]  cleaning up AWS load balancers created by Kubernetes objects of Kind Service or Ingress
+2026-01-08 18:02:14 [ℹ]  
+3 sequential tasks: { delete nodegroup "ng-b7be3cb2", 
+    2 sequential sub-tasks: { 
+        2 parallel sub-tasks: { 
+            2 sequential sub-tasks: { 
+                delete IAM role for serviceaccount "kube-system/ebs-csi-controller-sa",
+                delete serviceaccount "kube-system/ebs-csi-controller-sa",
+            },
+            2 sequential sub-tasks: { 
+                delete IAM role for serviceaccount "kube-system/aws-load-balancer-controller",
+                delete serviceaccount "kube-system/aws-load-balancer-controller",
+            },
+        },
+        delete IAM OIDC provider,
+    }, delete cluster control plane "demo-cluster-three-tier-1" [async] 
+}
+2026-01-08 18:02:14 [ℹ]  will delete stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:02:14 [ℹ]  waiting for stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2" to get deleted
+2026-01-08 18:02:14 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:02:45 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:03:41 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:04:38 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:05:33 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:06:05 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:07:16 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:08:48 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:10:04 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:11:42 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-nodegroup-ng-b7be3cb2"
+2026-01-08 18:11:42 [ℹ]  will delete stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
+2026-01-08 18:11:42 [ℹ]  waiting for stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa" to get deleted
+2026-01-08 18:11:43 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
+2026-01-08 18:11:43 [ℹ]  will delete stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2026-01-08 18:11:43 [ℹ]  waiting for stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller" to get deleted
+2026-01-08 18:11:43 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2026-01-08 18:12:13 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-ebs-csi-controller-sa"
+2026-01-08 18:12:13 [ℹ]  waiting for CloudFormation stack "eksctl-demo-cluster-three-tier-1-addon-iamserviceaccount-kube-system-aws-load-balancer-controller"
+2026-01-08 18:12:13 [ℹ]  serviceaccount "kube-system/ebs-csi-controller-sa" was not created by eksctl; will not be deleted
+2026-01-08 18:12:13 [ℹ]  deleted serviceaccount "kube-system/aws-load-balancer-controller"
+2026-01-08 18:12:13 [ℹ]  will delete stack "eksctl-demo-cluster-three-tier-1-cluster"
+2026-01-08 18:12:14 [✔]  all cluster resources were deleted
+ranjithkatanguri@RK helm % 
